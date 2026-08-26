@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Atom</title>
+</head>
+
+<body>
+
+  <div class="atom-app">
+
+    <!-- =========================
+           LEFT NAVIGATION RAIL
+      ========================== -->
+
+    <aside class="navigation-rail">
+
+      <div class="atom-logo">
+        <img src="./src/icons/atomLogo.png" alt="Atom Logo" class="logo-image" />
+      </div>
+
+
+      <div class="nav-items">
+
+        <button class="nav-item" data-view="dashboard">
+          <img src="./src/icons/dashboard.svg" alt="Dashboard" />
+          <span>Dashboard</span>
+        </button>
+
+
+        <button class="nav-item active" data-view="projects">
+          <img src="./src/icons/projects.svg" alt="Projects" />
+          <span>Projects</span>
+        </button>
+
+
+        <button class="nav-item" data-view="pinned">
+          <img src="./src/icons/pinned.svg" alt="Pinned" />
+          <span>Pinned</span>
+        </button>
+
+
+        <button class="nav-item" data-view="recurring">
+          <img src="./src/icons/recurring.svg" alt="Recurring" />
+          <span>Recurring</span>
+        </button>
+
+
+        <button class="nav-item" data-view="labels">
+          <img src="./src/icons/labels.svg" alt="Labels" />
+          <span>Labels</span>
+        </button>
+
+
+        <button class="nav-item" data-view="people">
+          <img src="./src/icons/people.svg" alt="People" />
+          <span>People</span>
+        </button>
+
+      </div>
+
+
+      <button class="settings-button">
+
+        <img src="./src/icons/settings.svg" alt="Settings" />
+
+        <span>Settings</span>
+
+      </button>
+
+    </aside>
+
+
+    <!-- =========================
+           PROJECT EXPLORER
+      ========================== -->
+
+    <aside class="project-explorer">
+
+      <!-- PROJECT HEADER -->
+
+      <div class="panel-header">
+
+        <h2 id="panel-title">Projects</h2>
+
+
+        <div class="date-selector">
+
+          <select id="year-select">
+            <option>Loading...</option>
+          </select>
+
+
+          <select id="month-select">
+            <option>Loading...</option>
+          </select>
+
+
+          <button id="create-project">
+            +
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- PROJECT LIST -->
+
+      <div class="project-list">
+
+        <div class="empty-state">
+          No Projects
+        </div>
+
+      </div>
+
+    </aside>
+
+
+    <!-- =========================
+           MAIN WORKSPACE
+      ========================== -->
+
+    <main class="workspace">
+
+
+      <!-- PROJECT HEADER -->
+
+      <header class="project-header">
+
+      <div class="project-header-top">
+        <div class="project-date">
+          Today
+        </div>
+      </div>
+
+      <h1>
+        Inspo Project
+      </h1>
+
+      <div class="project-tags-header"></div>
+
+      <p>
+        This is a dummy description describing the selected project.
+        Project information will appear here.
+      </p>
+
+    </header>
+
+      <section class="workspace-container">
+
+        <div class="file-section">
+
+          <div class="file-section-header">
+            <div class="file-header-left">
+              <div class="section-title">
+                Files
+              </div>
+              <nav class="file-breadcrumbs" id="file-breadcrumbs" aria-label="Folder path"></nav>
+            </div>
+            <div class="file-view-controls" role="group" aria-label="File view">
+              <button class="file-view-button active" type="button" data-file-view="list" aria-label="List view" aria-pressed="true" title="List view">☰</button>
+              <button class="file-view-button" type="button" data-file-view="grid" aria-label="Grid view" aria-pressed="false" title="Grid view">▦</button>
+            </div>
+          </div>
+
+          <div class="file-list">
+            <div class="empty-state">
+              No Files
+            </div>
+          </div>
+
+        </div>
+
+        <aside class="notes-panel">
+
+          <div class="notes-panel-header">
+            <div class="section-title">
+              Notes
+            </div>
+            <button class="note-action-button" id="create-note-button">
+              + New note
+            </button>
+          </div>
+
+          <div class="notes-content">
+
+            <div class="empty-state">
+              No notes available
+            </div>
+
+          </div>
+
+        </aside>
+
+      </section>
+
+    </main>
+
+    <main class="dashboard-view" id="dashboard-view" hidden></main>
+
+  </div>
+
+
+  <script type="module" src="/src/renderer.ts"></script>
+
+</body>
+
+</html>

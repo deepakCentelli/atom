@@ -1,0 +1,13 @@
+\.vite
+\.vite\build
+\.vite\build\main.js
+\.vite\build\preload.js
+\.vite\renderer
+\.vite\renderer\main_window
+\.vite\renderer\main_window\assets
+\.vite\renderer\main_window\assets\atomLogo-By9B66C0.png
+\.vite\renderer\main_window\assets\index-Big8KWHB.js
+\.vite\renderer\main_window\assets\index-qL-Es0ry.css
+\.vite\renderer\main_window\assets\settings-CMgjJknX.svg
+\.vite\renderer\main_window\index.html
+\package.json
