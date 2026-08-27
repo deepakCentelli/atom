@@ -1,25 +1,46 @@
-```
+# Compiled and build artifacts
+*.pyc
+__pycache__/
+*.o
+*.obj
+*.class
+*.exe
+*.dll
+*.so
+*.a
+*.out
+
 # Dependencies
 node_modules/
-
-# Build artifacts
-.vite/build/
-dist/
-build/
-
-# Electron distribution
-node_modules/electron/dist/
+venv/
+.venv/
+.env
+.env.local
+.env.*
 
 # Logs and temp files
 *.log
 *.tmp
-
-# Environment
-.env
-.env.local
-*.env.*
+*.swp
+*.swo
 
 # Editors
 .vscode/
 .idea/
-```
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Build directories
+dist/
+build/
+target/
+.gradle/
+.mypy_cache/
+.pytest_cache/
