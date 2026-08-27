@@ -139,7 +139,7 @@ let selectedProject: RealProject | null = null;
 let currentProjects: RealProject[] = [];
 let currentFolderPath = "";
 
-let activeView: "projects" | "labels" | "people" | "dashboard" | "pinned" | "recurring" =
+let activeView: "projects" | "labels" | "people" | "dashboard" | "pinned" | "recurring" | "notes" =
     "projects";
 
 function getProjectLocation(projectOrName?: RealProject | string | null): { year: string; month: string; name: string; path: string } {
@@ -298,7 +298,8 @@ document.querySelectorAll<HTMLButtonElement>(".file-view-button")
 
 interface NoteRecord {
     id: string;
-    project_id: string;
+    project_id: string | null;
+    title: string | null;
     content: string;
     created_at: string;
     updated_at: string;
@@ -809,7 +810,7 @@ function clearDirectoryWorkspace() {
 }
 
 async function switchView(
-    view: "projects" | "labels" | "people" | "dashboard" | "pinned" | "recurring"
+    view: "projects" | "labels" | "people" | "dashboard" | "pinned" | "recurring" | "notes"
 ) {
 
     activeView = view;
@@ -818,13 +819,20 @@ async function switchView(
         item.classList.toggle("active", item.dataset.view === view);
     });
 
+    const notesView = document.querySelector<HTMLElement>("#notes-view");
     dashboardView.hidden = view !== "dashboard";
-    document.querySelector<HTMLElement>(".project-explorer")!.style.display = view === "dashboard" ? "none" : "flex";
-    document.querySelector<HTMLElement>(".workspace")!.style.display = view === "dashboard" ? "none" : "flex";
+    if (notesView) notesView.hidden = view !== "notes";
+    document.querySelector<HTMLElement>(".project-explorer")!.style.display = (view === "dashboard" || view === "notes") ? "none" : "flex";
+    document.querySelector<HTMLElement>(".workspace")!.style.display = (view === "dashboard" || view === "notes") ? "none" : "flex";
 
-    if (view !== "dashboard" && attendanceInterval) {
+    if (view !== "dashboard" && view !== "notes" && attendanceInterval) {
         clearInterval(attendanceInterval);
         attendanceInterval = null;
+    }
+
+    if (view === "notes") {
+        await initializeNotesView();
+        return;
     }
 
     if (view === "dashboard") {
@@ -2711,7 +2719,7 @@ createNoteButton?.addEventListener(
 navigationItems.forEach(item => {
     item.addEventListener("click", () => {
         const view = item.dataset.view as
-            "projects" | "labels" | "people" | "dashboard" | "pinned" | "recurring";
+            "projects" | "labels" | "people" | "dashboard" | "pinned" | "recurring" | "notes";
 
         if (view) switchView(view);
     });
