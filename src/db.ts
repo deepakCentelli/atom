@@ -22,8 +22,9 @@ export interface ProjectRecord {
 
 export interface NoteRecord {
   id: string;
-  project_id: string;
+  project_id: string | null;
   content: string;
+  title?: string;
   created_at: string;
   updated_at: string;
 }
@@ -95,11 +96,12 @@ const createSchema = (database: SqlJsDatabase) => {
   database.run(`
     CREATE TABLE IF NOT EXISTS notes (
       id TEXT PRIMARY KEY,
-      project_id TEXT NOT NULL,
+      project_id TEXT,
+      title TEXT,
       content TEXT,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL,
-      FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE
+      FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE SET NULL
     );
   `);
 
@@ -269,7 +271,8 @@ export const deleteProjectRecordByPath = (projectPath: string) => {
 
 export const createNoteRecord = (note: {
   id: string;
-  project_id: string;
+  project_id?: string | null;
+  title?: string;
   content?: string;
 }): NoteRecord => {
   if (!db) {
@@ -281,18 +284,20 @@ export const createNoteRecord = (note: {
     INSERT OR REPLACE INTO notes (
       id,
       project_id,
+      title,
       content,
       created_at,
       updated_at
-    ) VALUES (?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?)
   `);
 
-  stmt.run([note.id, note.project_id, note.content ?? "", timestamp, timestamp]);
+  stmt.run([note.id, note.project_id ?? null, note.title ?? null, note.content ?? "", timestamp, timestamp]);
   saveDatabase();
 
   return {
     id: note.id,
-    project_id: note.project_id,
+    project_id: note.project_id ?? null,
+    title: note.title ?? undefined,
     content: note.content ?? "",
     created_at: timestamp,
     updated_at: timestamp,
@@ -429,23 +434,70 @@ export const getNoteRecordById = (
 
 export const updateNoteRecord = (
   noteId: string,
-  content: string
+  updates: { content?: string; title?: string; project_id?: string | null }
 ): NoteRecord | null => {
   if (!db) {
     throw new Error("Database is not initialized.");
   }
 
   const timestamp = now();
+  const current = getNoteRecordById(noteId);
+  if (!current) return null;
+
+  const newContent = updates.content !== undefined ? updates.content : current.content;
+  const newTitle = updates.title !== undefined ? updates.title : current.title ?? null;
+  const newProjectId = updates.project_id !== undefined ? updates.project_id : current.project_id;
+
   const stmt = db.prepare(`
     UPDATE notes
-    SET content = ?, updated_at = ?
+    SET content = ?, title = ?, project_id = ?, updated_at = ?
     WHERE id = ?
   `);
 
-  stmt.run([content, timestamp, noteId]);
+  stmt.run([newContent, newTitle, newProjectId, timestamp, noteId]);
   saveDatabase();
 
   return getNoteRecordById(noteId);
+};
+
+export const getAllNotes = (): NoteRecord[] => {
+  if (!db) {
+    throw new Error("Database is not initialized.");
+  }
+
+  const stmt = db.prepare(`
+    SELECT * FROM notes
+    ORDER BY created_at DESC
+  `);
+  
+  const notes: NoteRecord[] = [];
+  while (stmt.step()) {
+    notes.push(stmt.getAsObject() as NoteRecord);
+  }
+  stmt.free();
+
+  return notes;
+};
+
+export const getNotesByProjectId = (projectId: string | null): NoteRecord[] => {
+  if (!db) {
+    throw new Error("Database is not initialized.");
+  }
+
+  const stmt = db.prepare(`
+    SELECT * FROM notes
+    WHERE project_id = ?
+    ORDER BY created_at DESC
+  `);
+  stmt.bind([projectId]);
+
+  const notes: NoteRecord[] = [];
+  while (stmt.step()) {
+    notes.push(stmt.getAsObject() as NoteRecord);
+  }
+  stmt.free();
+
+  return notes;
 };
 
 

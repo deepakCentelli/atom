@@ -58,6 +58,11 @@
           <span>People</span>
         </button>
 
+        <button class="nav-item" data-view="notes">
+          <img src="./src/icons/label.svg" alt="Notes" />
+          <span>Notes</span>
+        </button>
+
       </div>
 
 
@@ -200,6 +205,47 @@
     </main>
 
     <main class="dashboard-view" id="dashboard-view" hidden></main>
+
+    <!-- =========================
+           GENERAL NOTES VIEW
+      ========================== -->
+    <main class="notes-view" id="notes-view" hidden>
+      
+      <!-- Notes Sidebar -->
+      <aside class="notes-sidebar">
+        <div class="notes-sidebar-header">
+          <h2 class="notes-sidebar-title">Notes</h2>
+          <div class="notes-date-filters">
+            <select id="notes-year-select" class="notes-year-select">
+              <option>Loading...</option>
+            </select>
+            <select id="notes-month-select" class="notes-month-select">
+              <option>Loading...</option>
+            </select>
+          </div>
+        </div>
+        <div class="notes-list-container">
+          <div class="notes-list">
+            <div class="empty-state">No notes available</div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Note Editor Area -->
+      <section class="note-editor-section">
+        <div class="note-editor-header">
+          <div class="note-display-date"></div>
+          <input type="text" class="note-title-input" placeholder="Note title" />
+        </div>
+        <div class="note-editor-surface">
+          <div class="note-editor-toolbar">
+            <!-- Toolbar buttons will be inserted here -->
+          </div>
+          <div class="note-editor-content" contenteditable="true"></div>
+        </div>
+      </section>
+
+    </main>
 
   </div>
 
