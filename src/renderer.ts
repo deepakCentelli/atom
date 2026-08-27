@@ -157,6 +157,15 @@ function getProjectLocation(projectOrName?: RealProject | string | null): { year
         const normalized = proj.path.replace(/\\/g, "/");
         const segments = normalized.split("/").filter(Boolean);
         const name = proj.name || (segments.length > 0 ? segments[segments.length - 1] : "");
+        
+        // Check if this is a recurring project (path contains "Recurring Projects")
+        const isRecurring = proj.path.includes("Recurring Projects");
+        
+        if (isRecurring) {
+            // For recurring projects, use empty year/month and pass the full path
+            return { year: "", month: "", name, path: proj.path };
+        }
+        
         const month = segments.length >= 2 ? segments[segments.length - 2] : (monthSelect?.value || "");
         const year = segments.length >= 3 ? segments[segments.length - 3] : (yearSelect?.value || "");
         return { year, month, name, path: proj.path };
@@ -496,12 +505,22 @@ async function openProjectContent(
     const loc = getProjectLocation(projectName);
 
     try {
-        await window.electronAPI.openProjectContent(
-            loc.year,
-            loc.month,
-            loc.name,
-            relativePath
-        );
+        // For recurring projects or path-based projects, pass the full path as first argument
+        if (loc.path && (loc.year === "" || loc.month === "")) {
+            await window.electronAPI.openProjectContent(
+                loc.path,
+                "",
+                "",
+                relativePath
+            );
+        } else {
+            await window.electronAPI.openProjectContent(
+                loc.year,
+                loc.month,
+                loc.name,
+                relativePath
+            );
+        }
     } catch (err) {
         console.error("Failed to open project content:", err);
 
@@ -3612,6 +3631,7 @@ async function loadProjectContents(
     folders.forEach(folder => {
         const element = document.createElement("div");
         element.className = "file-card folder-card";
+        element.draggable = true;
         const relativeFolderPath = currentFolderPath ? `${currentFolderPath}\\${folder.name}` : folder.name;
 
         element.innerHTML = `

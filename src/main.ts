@@ -880,7 +880,13 @@ ipcMain.handle(
   ) => {
     let projectPath: string;
     let relPath: string;
-    if (projectName !== undefined && relativePath !== undefined) {
+    
+    // Handle recurring projects: when year is empty and path is provided
+    if (yearOrPath && !month && !projectName && relativePath) {
+      // This is a path-based call for recurring projects
+      projectPath = yearOrPath;
+      relPath = relativePath;
+    } else if (projectName !== undefined && relativePath !== undefined) {
       projectPath = getProjectPath(yearOrPath, month, projectName);
       relPath = relativePath;
     } else {
