@@ -835,6 +835,12 @@ async function switchView(
         return;
     }
 
+    // Hide notes panel in workspace for non-project views
+    const notesPanel = document.querySelector<HTMLElement>(".notes-panel");
+    if (notesPanel) {
+        notesPanel.style.display = (view === "projects" || view === "pinned" || view === "recurring") ? "flex" : "none";
+    }
+
     if (view === "dashboard") {
         await renderDashboard();
         return;
